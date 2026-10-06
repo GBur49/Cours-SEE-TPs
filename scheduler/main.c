@@ -20,13 +20,29 @@ static int task_count = 0;
 
 uint64_t get_time_ms(void) {
     // TODO: return current time
+    struct timespec time;
+    if(clock_gettime(CLOCK_THREAD_CPUTIME_ID, &time)!=0){
+        printf("Erreur pour récupérer le temps");
+        return -1;
+    }
+
+    printf("Current time: %ld ms\n",time.tv_sec);
+
     return 0;
 }
 
 void task_register(const char *name, uint32_t period_ms, uint32_t max_runs, void (*func)(void)) {
-    // TODO
-    // register a task
-    // !!! Check max tasks
+    if(task_count >= MAX_TASKS){
+        printf("Impossible de créer une nouvelle task, nombre de task max atteint");
+    }
+     task_t newTask = {0};
+    newTask.name = name;
+    newTask.period_ms = period_ms;
+    newTask.max_runs = max_runs;
+    newTask.run_count = 0;
+
+    task_count++;
+    tasks[task_count - 1] = newTask;
 }
 
 void task_1_handler(void) {
@@ -40,9 +56,17 @@ void task_2_handler(void) {
 int main(void) {
     task_register("SensorTask", 100, 12, task_1_handler); // Runs 12 times
     task_register("LoggerTask", 500, 2, task_2_handler); // Runs 2 time
-
+    int t = 0;
     while (true) {
         // TODO: complete the loop
+        while(t<=MAX_TASKS){
+            for(int i=0; i == tasks[t].max_runs -1; i++){
+                printf("%s is executed\n",tasks[t].name);
+            }
+        t++;
+        }
+
+
     }
 
     return 0;
