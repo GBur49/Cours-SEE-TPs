@@ -28,21 +28,20 @@ uint64_t get_time_ms(void) {
 
     printf("Current time: %ld ms\n",time.tv_sec);
 
-    return 0;
+    return time.tv_sec;
 }
 
 void task_register(const char *name, uint32_t period_ms, uint32_t max_runs, void (*func)(void)) {
     if(task_count >= MAX_TASKS){
         printf("Impossible de créer une nouvelle task, nombre de task max atteint");
     }
-     task_t newTask = {0};
-    newTask.name = name;
-    newTask.period_ms = period_ms;
-    newTask.max_runs = max_runs;
-    newTask.run_count = 0;
-
+    tasks[task_count].name = name;
+    tasks[task_count].period_ms = period_ms;
+    tasks[task_count].max_runs = max_runs;
+    tasks[task_count].name = 0;
+    tasks[task_count].func = func;
     task_count++;
-    tasks[task_count - 1] = newTask;
+    
 }
 
 void task_1_handler(void) {
@@ -64,6 +63,7 @@ int main(void) {
                 printf("%s is executed\n",tasks[t].name);
             }
         t++;
+        
         }
 
 
